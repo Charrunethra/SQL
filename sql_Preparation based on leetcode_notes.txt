@@ -1,0 +1,438 @@
+I) SELECT 
+
+Synatx:
+SELECT column1,column2,... FROM table_name;
+//columns--> field names
+EG:
+SELECT*FROM table_name;
+SELECT CustomerName,City FROM Customers;  // only particular column Name and city will be displayed
+SELECT*FROM Customers; //all the columns are displayed
+---------------------------------------------------------------------
+CREATE TABLE IF not EXISTS Products(product_id int, low_fats ENUM('Y', 'N'), recyaclable ENUM('Y','N'))
+TRUNCATE TABLE Products
+insert into Products (product_id, low_fats, recyclable) values ('0', 'Y', 'N')
+insert into Products (product_id, low_fats, recyclable) values ('1', 'Y', 'Y')
+
+MEANINNG::ENUM: A ENUM is a string object with a value chosen from a list of permitted values that are enumerated explicitly in the column specification at table creation
+CREATE TABLE IF NOT EXISTS :: whether or not the table already exists on the source
+TRUNCATE TABLE:: empties a table completely..DELETE command is used to delete particular records from a table. The TRUNCATE command is used to delete the complete data from the table.
+INSERT INTO statement is used to insert new records in a table.
+----------------------------------------------------------------------
+SELECT DISTINCT::It avoids duplicate row values of a particular value in the column.
+-----------------------------------------------------------------------
+For eg: content is a column in a table which is a string...How to find the length or find the no. of characters in the content na?
+LENGTH(content)--> this command gives the length of the content...
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+II) BASIC JOINS
+LEFT JOIN:: If it finds the matches with the left table and the common of the right table, then it extracts the information, else it stores the value as null in that particular column.
+----------------------------------------------------------------------
+DATE Datatype in SQL:: Date Datatype format is YYYY-MM-DD.
+DATETIME Datatype format is YYYY-MM-DD HH:MI:SS
+TIMESTAMP Datatypee format is YYYY-MM-DD HH:MI:SS
+DATE_ADD() function::
+Eg: SELECT DATE_ADD("2017-06-15", INTERVAL 10 DAY);
+LAG OVER FUNCTION::
+LAG() is a window function that allows us to compare the current record value with the value of previous records. This works similar to the LEAD() function in SQL. In the lead function, we access successive rows, but in the lag function, we access previous rows.
+EXAMPLE OF LAG FUNCTION::
+LAG(recordDate) OVER(ORDER BY recordDate) AS prev_recordDate...   
+# Alwaya write OVER clause for a window function
+-------------------------------------------------------------------------
+CTE is Common Table Expression. It specifies a temperory named result set.
+# Resultset is a class used to store the results of the select query statement..
+# Every result obtained is stored in result set..
+Eg: With cte AS (Select....from Weather)
+select id from cte where conditions...
+For more cte, don't use WITH keyword again and again...instead go with ','..
+Eg: With cte AS(), cte2 AS()
+---------------------------------------------------------------------------
+SELF JOIN: Just the Keyword is 'JOIN'
+CROSS JOIN: What is a CROSS JOIN in SQL? In SQL, CROSS JOINs are used to combine each row of one table with each row of another table, and return the Cartesian product of the sets of rows from the tables that are joined.
+            While performing cross join, no need of 'ON' keyword in sql becoz it takes all the combinations of each row from both the table. Eg: if one table has 4 rows and another table has 3 rows, its cross join would be 4x3 = 12 rows in the result table.
+
+EG(Image link address): https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.devart.com%2Fdbforge%2Fsql%2Fsqlcomplete%2Fsql-cross-join.html&psig=AOvVaw2KF7-pIO7pnAa3gkWghujo&ust=1685991263133000&source=images&cd=vfe&ved=0CBEQjRxqFwoTCOCa0qelqv8CFQAAAAAdAAAAABAE
+----------------------------------------------------------------------------
+See the question, if its given to order, use ORDER BY...
+CASE WHEN....THEN ... ELSE...END AS..
+Eg:
+CASE WHEN cte2.count IS NOT NULL THEN count
+ELSE 0 END AS attended_exams
+----------------------------------------------------------------------------
+if condition has to satisfied in GROUP BY, use HAVING
+REASON: The HAVING keyword was introduced because the WHERE clause fails when used with aggregate functions.
+#A HAVING clause is like a WHERE clause, but applies only to groups as a whole (that is, to the rows in the result set representing groups), whereas the WHERE clause applies to individual rows.
+----------------------------------
+IN OPERATOR:
+-->The IN operator allows you to specify multiple values in a WHERE clause.
+-->The IN operator is a shorthand for multiple OR conditions.
+IN Syntax:
+SELECT column_name(s)
+FROM table_name
+WHERE column_name IN (value1, value2, ...);
+or:
+SELECT column_name(s)
+FROM table_name
+WHERE column_name IN (SELECT STATEMENT);
+-------------------------------------------------
+in GROUP BY...COUNT(*)--> Count the no.of rows of each group
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+III) BASIC AGGREGATE FUNCTIONS:
+SQL AGGREGATE FUNCTIONS:
+-> SQL Aggregate function is used to perform the calculations on multiple rows of a single column of a table. It returns a single value.
+-> It is also used to summarize the data.
+TYPES OF SQL AGGREGATE FUNCTION: 1)COUNT 2)SUM 3)AVG 4)MAX 5)MIN
+
+COUNT FUNCTION:
+->COUNT function is used to Count the number of rows in a database table. It can work on both numeric and non-numeric data types.
+->COUNT function uses the COUNT(*) that returns the count of all the rows in a specified table. COUNT(*) considers duplicate and Null.
+SYNTAX:
+COUNT(*)  
+or  
+COUNT( [ALL|DISTINCT] expression )  
+->Example: COUNT()
+SELECT COUNT(*)  
+FROM PRODUCT_MAST;
+  
+->Example: COUNT with WHERE
+SELECT COUNT(*)  
+FROM PRODUCT_MAST;  
+WHERE RATE>=20;  
+
+->Example: COUNT() with DISTINCT
+SELECT COUNT(DISTINCT COMPANY)  
+FROM PRODUCT_MAST;    
+
+->Example: COUNT() with GROUP BY
+SELECT COMPANY, COUNT(*)  
+FROM PRODUCT_MAST  
+GROUP BY COMPANY;  
+
+->Example: COUNT() with HAVING
+SELECT COMPANY, COUNT(*)  
+FROM PRODUCT_MAST  
+GROUP BY COMPANY  
+HAVING COUNT(*)>2;  
+
+SUM FUNCTION:
+->Sum function is used to calculate the sum of all selected columns. It works on numberic fields only.
+Syntax:
+SUM()  
+or  
+SUM( [ALL|DISTINCT] expression )  
+
+->Example: SUM()
+SELECT SUM(COST)
+FROM PRODUCT_MAST
+
+->Example: SUM() with WHERE
+SELECT SUM(COST)
+FROM PRODUCT_MAST
+WHERE QTY>3;
+//O/P: 320
+->Example: SUM() with GROUP BY 
+SELECT SUM(COST)
+FROM PRODUCT_MAST
+WHERE QTY>3
+GROUP BY COMPANY
+//O/P:
+Com1    150
+Com2    170
+->Example: SUM() with HAVING
+SELECT COMPANY,SUM(COST)
+FROM PRODUCT_MAST
+GROUP BY COMPANY
+HAVING SUM(COST)>=170
+
+AVG FUNCTION:
+->The AVG function is used to calculate the average value of the numeric type. AVG function returns the average of all non-Null values.
+Syntax:
+AVG()  
+or  
+AVG( [ALL|DISTINCT] expression )  
+
+->Example:
+SELECT AVG(COST)  
+FROM PRODUCT_MAST; 
+
+MAX FUNCTION:
+->MAX function is used to find the maximum value of a certain column. This function determines the largest value of all selected values of a column.
+Syntax:
+MAX()  
+or  
+MAX( [ALL|DISTINCT] expression )  
+->Example:
+SELECT MAX(RATE)  
+FROM PRODUCT_MAST;  
+
+MIN FUNCTION:
+->MIN function is used to find the minimum value of a certain column. This function determines the smallest value of all selected values of a column.
+Syntax:
+MIN()  
+or  
+MIN( [ALL|DISTINCT] expression )  
+->Example:
+SELECT MIN(RATE)  
+FROM PRODUCT_MAST; 
+ 
+Not only SUM and COUNT keyword works but also AVG keyword works under operation....like instead of
+AVG(Column_name) , we can do it as in operation as 
+AVG(column_name2 / column_name1)
+eg:  AVG(rating/position)
+but runtime is high compared to previous
+---------------------------------------
+INNER JOIN:
+The INNER JOIN keyword selects records that have matching values in both tables. 
+INNER JOIN Syntax:
+SELECT column_name(s)
+FROM table1
+INNER JOIN table2
+ON table1.column_name = table2.column_name;
+BETWEEN: BETWEEN keyword includes its range also in sql
+DATE_FORMAT function:
+#SYNTAX
+#DATE_FORMAT(date, format)
+#date – Specified date to be formatted.
+#format – Specified format. 
+EG: (DETAILED LINK ADDRESS OF DATE_FORMAT SYNTAX) https://www.geeksforgeeks.org/date_format-function-in-mysql/
+DATE_FORMAT(column_name,'%Y-%m')
+# %M(Captital M) -> Month in letter.....small m in number
+#%Y(capital Y) -> gives full year(eg: 2018) %y(small y) -> gives shortcut(eg:18)
+RANK WINDOW FUNCTION:
+-> SQL’s RANK() function allows us to add a record’s position within the result set or within each partition. In our example, we rank rows within a partition.
+-> Since its window function, we need to use OVER clause...also(if we want it for each of the customer)-> use PARTITION
+EG:
+RANK()OVER(PARTITION BY customer_id ORDER BY order_date)
+about RANK Function:
+#The RANK Function in SQL Server is a kind of Ranking Function. This function will assign the number to each row within the partition of an output. It assigns the rank to each row as one #plus the previous row rank.
+-----------
+!= operator can also be used in sql.....!= can be <>
+----------------------
+MIN function can also be used for date
+EG: MIN(date)
+-------------------
+WHERE can also be used to check whether the group of columns is present or not..
+EG: WHERE (player_id, event_date) IN (SELECT player_id, next_date FROM cte2)
+
+IV) Sorting and Grouping
+Understand the question clearly in leetcode(key)..(its confusing)
+Completed
+
+V) Advanced Select and Joins 
+
+ROUND(operation, 0) --> 0 here becoz it rounds it to nearest integer--> basically 0 decimal places
+--------------------------------
+EG: SELECT primary_flag = 'Y' FROM Employee
+Here the result can be 0 1 1 0 (based on which if it is 'Y'->1 else 0)
+---------------------------------
+The SQL UNION Operator
+The UNION operator is used to combine the result-set of two or more SELECT statements.
+
+Every SELECT statement within UNION must have the same number of columns
+The columns must also have similar data types
+The columns in every SELECT statement must also be in the same order
+SYNTAX : 
+SELECT column_name(s) FROM table1
+UNION
+SELECT column_name(s) FROM table2;
+UNION ALL Syntax
+The UNION operator selects only distinct values by default. To allow duplicate values, use UNION ALL:
+
+SELECT column_name(s) FROM table1
+UNION ALL
+SELECT column_name(s) FROM table2;
+----------------------------------------
+LEAD function: 
+LEAD(colum_name, how much next we want(int)) OVER() --> no need partition and no need order by becoz its consecutive question
+EG: LEAD(num,1) OVER() AS next1, LEAD(num,2) OVER() AS next2
+-------------------------------------------
+Window function to calculate the running total--> if window function, use OVER()
+since to calculate running total, we need to create a frame i.e., start from the very beginning and wherever your cursor is--> complete the sum of the weight column upto that point
+To do that keywords are -> ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
+EG:
+SUM(weight) OVER(ORDER BY turn ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS total
+-----------------------------------------------
+IMPORTANT
+
+LIMIT - Keyword is used to limit the rows
+EG: SELECT * FROM employee LIMIT 1; (here 1st row alone is printed)
+
+--------------------------------------------------
+(CASE WHEN + SUM) = (COUNT) in sql
+EG: SUM(CASE WHEN income < 20000 THEN 1 ELSE 0 END) AS accounts_count
+
+VI) SUBQUERIES
+
+LEAD AND LAG FUNCTION EG:
+EG: LEAD(id) OVER(ORDER BY id)
+LAG(id) OVER(ORDER BY id)
+------------------
+ODD AND EVEN ID SWAP CONDITION (SIMPLE BUT NEW CONCEPT IN SQL QUESTION)
+----------------------
+LEFT JOIN can be done twice in a single select statement
+EG: SELECT columns FROM MOVIERATING  mr LEFT JOIN Users u ON mr.user_id = u.user_id
+LEFT JOIN movie m ON mr.movie_id = m.movie_id
+--------------------------
+in UNION we can give anyone SELECT statement as AS results
+EG:
+(SELECT name AS results FROM cte) UNION (SELECT name FROM cte)
+-----------------------------
+COMPARING the date with date format:
+DATE FORMAT(date, '%Y-%m') = '2020-02'
+-----------------------------
+OREDR BY EG:
+ORDER BY count(*) DESC, name
+(Here when the count(*) has same value it orders by the name in ascending order)
+---------------------------
+for 2 - 3 tables...put as
+SELECT mr.* , u.user_id FROM....etc.
+---------------------------
+UNION -> gives distinct value
+UNION ALL -> includes duplicate values also
+-----------------------------
+For current sum and preceding 6 sums(running sum and avg use the below code)
+ROWS BETWEEN 6 PRECEDING AND CURRENT ROW
+EG:
+SUM(total_sum) OVER(ORDER BY visited_on ROWS BETWEEN 6 PRECEDING AND CURRENT ROW) AS amount
+----------------------------------
+Mostly the cross join maps each and every row of one table to every other row in the other table. 
+But self join does the operation same as above but only with one table.
+SELF JOIN EG:
+SELECT a.*, b.* FROM cte a, cte b
+-----------------------------------
+In leetcode, DATEDIFF function
+SYNTAX: DATEDIFF(date1, date2)
+EG:
+FROM cte a, cte b
+WHERE DATEDIFF(a.visited_on, b.visited_on) BETWEEN 0 AND 6
+
+SAMPLE O/P: (the below sample o/p is for better understanding of DATEDIFF)
+date1      | date 2     |diff
+
+2019-01-01 | 2019-01-02 | -1 
+
+2019-01-02 | 2019-01-01 | 1   
+----------------------------------------
+<> is different from NOT IN 
+<> (!=) compares the single value...NOT IN compares with the multiple values
+-------------------------------------------
+CONCAT() function
+EG: CONCAT(lan, ',', lon);
+The SQL CONCAT function joins two or more strings together to form a single string. The CONCAT function contains at least two parameters and can accept a total of 254 parameters.
+-----
+As of now remember that, CONCAT can't be used in group by and having...can only be used in WHERE clause...(Commented in the video to the question -> investments in 2016)
+----------------------------
+DISTINCT() function can also be written as
+EG:
+SELECT DISTINCT I1.*
+FROM Insurance I1
+LEFT JOIN Insurance I2
+ON I1.tiv_2015 = I2.tiv_2015
+----------------------------------------------
+Difference between DENSE_RANK() AND RANK() function:
+
+The RANK and DENSE_RANK functions are slightly different from each other as well as the ROW_NUMBER function: RANK numbers are skipped so there may be a gap in rankings, and may not be unique. DENSE_RANK numbers are not skipped so there will not be a gap in rankings, and may not be unique.
+EG:
+RANK: a list of results could use the RANK function and show values of 1, 2, 2, 4, and 5. The number 3 is skipped because the rank of 2 is tied.
+DENSE_RANK: a list of results could use the DENSE_RANK function and show values of 1, 2, 2, 3, and 4. The number 3 is still used, even if rank of 2 is tied.
+
+VII) Advanced String Functions / Regex / Clause
+
+upper() function -> Makes the string upper
+lower() function -> Makes the string lower
+substring() function -> Definition and Usage
+The SUBSTRING() function extracts some characters from a string.
+
+Syntax
+SUBSTRING(string, start, length)
+
+Parameter Values
+Parameter	Description
+string	Required. The string to extract from
+start	      Required. The start position. The first position in string is 1
+length	Required. The number of characters to extract. Must be a positive number
+--------------------------------------------------------------------------------------
+LIKE operator in sql
+The SQL LIKE Operator
+The LIKE operator is used in a WHERE clause to search for a specified pattern in a column.
+
+There are two wildcards often used in conjunction with the LIKE operator:
+
+ The percent sign % represents zero, one, or multiple characters
+ The underscore sign _ represents one, single character
+EG:
+Select all customers that starts with the letter "a":
+
+SELECT * FROM Customers
+WHERE CustomerName LIKE 'a%';
+--------
+The _ Wildcard
+The _ wildcard represents a single character.
+
+It can be any character or number, but each _ represents one, and only one, character.
+
+Example
+Return all customers from a city that starts with 'L' followed by one wildcard character, then 'nd' and then two wildcard characters:
+
+SELECT * FROM Customers
+WHERE city LIKE 'L_nd__';
+---------------
+The % Wildcard
+The % wildcard represents any number of characters, even zero characters.
+
+Example
+Return all customers from a city that contains the letter 'L':
+
+SELECT * FROM Customers
+WHERE city LIKE '%L%';
+--------------------
+Return all customers that ends with 'a':
+
+SELECT * FROM Customers
+WHERE CustomerName LIKE '%a';
+----------------------
+Return all customers that starts with "a" and are at least 3 characters in length:
+
+SELECT * FROM Customers
+WHERE CustomerName LIKE 'a__%';
+-------------------------
+Return all customers that have "r" in the second position:
+
+SELECT * FROM Customers
+WHERE CustomerName LIKE '_r%';
+---------------------------
+Without Wildcard
+If no wildcard is specified, the phrase has to have an exact match to return a result.
+
+Example
+Return all customers from Spain:
+
+SELECT * FROM Customers
+WHERE Country LIKE 'Spain';
+----------------------------------------------
+IFNULL :
+IFNULL(expression, specified_value);
+Meaning: The expression is evaluated and checks whether it is null. If it is null, then it gives the specified value...
+EG:
+SELECT IFNULL ((SELECT salary FROM cte WHERE r = 2 LIMIT 1),null) AS SecondHighestSalary
+---------------------------------------------------------------
+In MySQL, We say it as GROUP_CONCAT but in T-SQL is called as String aggregation...
+GROUP_CONCAT -> Within the group (for each of the group), it is trying to concat the values from the given column and by default the concatenation occurs with a ','...
+-----------------------------------------------------
+MONTH() & YEAR() function 
+The YEAR() function returns the year part for a specified date.
+The MONTH() function returns the month part for a specified date (a number from 1 to 12).
+EG:
+
+
+
+
+
+
+
+
+
+
+
+
+
